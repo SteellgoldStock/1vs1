@@ -1,0 +1,6 @@
+name: 1vs1
+description: 1vs1 plugin
+version: 1.0.0
+api: 4.0.0
+author: Steellgold
+main: steellgold\combat\Combat
