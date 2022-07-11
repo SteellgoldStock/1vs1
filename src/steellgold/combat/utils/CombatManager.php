@@ -34,4 +34,9 @@ class CombatManager {
 	public function getDuels(): array {
 		return $this->duels;
 	}
+
+	public function createDuel(string $id, World $world, string $display_name): Duel {
+		$this->duels[$id] = new Duel($id, $world, $display_name);
+		return $this->duels[$id];
+	}
 }
