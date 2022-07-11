@@ -2,7 +2,17 @@
 
 namespace steellgold\combat\utils\instances;
 
+use JsonException;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\item\Item;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+use pocketmine\world\Position;
+use pocketmine\world\World;
+use steellgold\combat\Combat;
+use steellgold\combat\tasks\DuelCountdownTask;
 
 class Duel {
 
