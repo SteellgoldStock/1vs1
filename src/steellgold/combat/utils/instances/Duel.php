@@ -47,7 +47,7 @@ class Duel {
 		private array     $offhand = [],
 		private array     $blocksPlaced = [],
 	) {
-		var_dump($this->player1->getName() . " vs " . $this->player2->getName());
+
 	}
 
 	public function getId(): string {
