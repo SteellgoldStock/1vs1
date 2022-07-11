@@ -14,7 +14,6 @@ class CombatManager {
 	public function __construct() {
 		$duels = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
 		foreach ($duels->getAll() as $duelId => $data) {
-			$this->duels[] = new Duel($duelId);
 			$this->duels[$duelId] = new Duel(
 				$duelId,
 				Server::getInstance()->getWorldManager()->getWorldByName($data["world"]),$data["display_name"],
