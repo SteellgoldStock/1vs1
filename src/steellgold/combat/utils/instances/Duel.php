@@ -21,9 +21,17 @@ class Duel {
 
 	/**
 	 * @param string $id
+	 * @param World|null $world
+	 * @param string $display_name
 	 * @param Player|null $player1
 	 * @param Player|null $player2
+	 * @param Position|null $position1
+	 * @param Position|null $position2
 	 * @param bool $isStarted
+	 * @param Item[] $inventory
+	 * @param Item[] $armor
+	 * @param Item[] $offhand
+	 * @param array $blocksPlaced
 	 */
 	public function __construct(
 		private readonly string $id,
