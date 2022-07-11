@@ -6,6 +6,9 @@ use pocketmine\player\Player;
 
 class Duel {
 
+	const WIN = 5;
+	const LOOSE = 7;
+
 	/**
 	 * @param string $id
 	 * @param Player|null $player1
