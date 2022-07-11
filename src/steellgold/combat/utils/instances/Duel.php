@@ -58,8 +58,35 @@ class Duel {
 		$this->id = $id;
 	}
 
-	public function getPlayer1(): ?Player {
-		return $this->player1;
+	public function getWorld(): ?World {
+		return $this->world;
+	}
+
+	private function setWorld(?World $world): void {
+		$this->world = $world;
+	}
+
+	public function getDisplayName(): string {
+		return $this->display_name;
+	}
+
+	public function setDisplayName(string $display_name): void {
+		$this->display_name = $display_name;
+	}
+
+	public function setPlayer(int $id, ?Player $player): void {
+		match ($id) {
+			1 => $this->player1 = $player,
+			2 => $this->player2 = $player
+		};
+
+		$this->player1->teleport(match ($id) {
+			1 => $this->position1,
+			2 => $this->position2
+		});
+
+		$this->player1->setGamemode(GameMode::SURVIVAL());
+		$this->player1->setImmobile();
 	}
 
 	public function setPlayer2(?Player $player2): void {
