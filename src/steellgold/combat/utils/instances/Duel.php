@@ -89,8 +89,8 @@ class Duel {
 		$this->player1->setImmobile();
 	}
 
-	public function setPlayer2(?Player $player2): void {
-		$this->player2 = $player2;
+	public function getPlayer1(): ?Player {
+		return $this->player1;
 	}
 
 	public function getPlayer2(): ?Player {
