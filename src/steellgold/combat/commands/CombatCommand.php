@@ -19,7 +19,7 @@ class CombatCommand extends BaseCommand {
 		$sender->sendForm($this->getArenasForm());
 	}
 
-	public function getArenasForm() : MenuForm {
+	public static function getArenasForm() : MenuForm {
 
 		return new MenuForm(
 			"Liste des arènes",
