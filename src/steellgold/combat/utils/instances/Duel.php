@@ -34,10 +34,6 @@ class Duel {
 	 * @param array $blocksPlaced
 	 */
 	public function __construct(
-		private readonly string $id,
-		private ?Player         $player1 = null,
-		private ?Player         $player2 = null,
-		private bool            $isStarted = false
 	) {
 		var_dump($this->player1->getName() . " vs " . $this->player2->getName());
 	}
