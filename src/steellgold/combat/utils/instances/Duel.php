@@ -54,8 +54,8 @@ class Duel {
 		return $this->id;
 	}
 
-	public function setPlayer1(?Player $player1): void {
-		$this->player1 = $player1;
+	private function setId(string $id): void {
+		$this->id = $id;
 	}
 
 	public function getPlayer1(): ?Player {
