@@ -7,14 +7,17 @@ use pocketmine\plugin\PluginBase;
 use steellgold\combat\commands\CombatAdminCommand;
 use steellgold\combat\commands\CombatCommand;
 use steellgold\combat\utils\CombatManager;
+use steellgold\combat\utils\Serialize;
 
 class Combat extends PluginBase {
 
 	public static Combat $instance;
 	public CombatManager $manager;
+	public Serialize $serializer;
 
 	protected function onEnable(): void {
 		self::$instance = $this;
+		$this->serializer = new Serialize();
 		$this->manager = new CombatManager();
 
 		if(!PacketHooker::isRegistered()) {
@@ -24,6 +27,8 @@ class Combat extends PluginBase {
 		if (!file_exists($this->getDataFolder() . "arenas.json")) $this->saveResource("arenas.json");
 		$this->getServer()->getCommandMap()->register("duels", new CombatCommand($this,"arenas","Liste des arènes"));
 		$this->getServer()->getCommandMap()->register("duels", new CombatAdminCommand($this,"arena","Gérer les arènes"));
+	public function getSerializer(): Serialize {
+		return $this->serializer;
 	}
 
 	public function getManager() : CombatManager {
