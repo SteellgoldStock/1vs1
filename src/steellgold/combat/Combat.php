@@ -10,7 +10,7 @@ use steellgold\combat\utils\CombatManager;
 
 class Combat extends PluginBase {
 
-	public static $instance;
+	public static Combat $instance;
 	public CombatManager $manager;
 
 	protected function onEnable(): void {
