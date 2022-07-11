@@ -2,12 +2,11 @@
 
 namespace steellgold\combat\events;
 
-use pocketmine\event\Event;
 use steellgold\combat\utils\instances\Duel;
 
-class DuelEvent extends Event {
+class DuelEvent extends CustomEvent {
 	public function __construct(
-		private readonly Duel $duel
+		private Duel $duel
 	) {
 
 	}
