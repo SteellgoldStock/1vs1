@@ -14,6 +14,10 @@ class CombatManager {
 	public function __construct() {
 		$duels = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
 		foreach ($duels->getAll() as $duelId => $data) {
+			if (!Server::getInstance()->getWorldManager()->isWorldLoaded($data["world"])) {
+				Server::getInstance()->getWorldManager()->loadWorld($data["world"]);
+				Server::getInstance()->getLogger()->info("World " . $data["world"] . " was loaded because it was in the duel list.");
+			}
 			$this->duels[$duelId] = new Duel(
 				$duelId,
 				Server::getInstance()->getWorldManager()->getWorldByName($data["world"]),$data["display_name"],
