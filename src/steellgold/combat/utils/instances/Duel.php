@@ -130,4 +130,124 @@ class Duel {
 	public function isStarted(): bool {
 		return $this->isStarted;
 	}
+
+	/**
+	 * @return Item[]
+	 */
+	public function getInventory(): array {
+		return $this->inventory;
+	}
+
+	/**
+	 * @param Item[] $inventory
+	 * @return void
+	 */
+	public function setInventory(array $inventory): void {
+		$this->inventory = $inventory;
+	}
+
+	/**
+	 * @return Item[]
+	 */
+	public function getArmor(): array {
+		return $this->armor;
+	}
+
+
+	/**
+	 * @param Item[] $armor
+	 * @return void
+	 */
+	public function setArmor(array $armor): void {
+		$this->armor = $armor;
+	}
+
+	/**
+	 * @return Item[]
+	 */
+	public function getOffhand(): array {
+		return $this->offhand;
+	}
+
+	/**
+	 * @param Item[] $offhand
+	 * @return void
+	 */
+	public function setOffhand(array $offhand): void {
+		$this->offhand = $offhand;
+	}
+
+	public function getSlots(bool $integer = false): int|string {
+		if ($integer) {
+			$i = 0;
+			if ($this->getPlayer1() !== null) $i++;
+			if ($this->getPlayer2() !== null) $i++;
+			return $i;
+		}
+
+		if ($this->player1 !== null and $this->player2 == null) return "1/2";
+		elseif ($this->player1 == null and $this->player2 == null) return "§2Arène disponible (0/2)";
+		elseif ($this->player1 !== null and $this->player2 !== null) return "§cDuel en cours (2/2)";
+		else return "1/2";
+	}
+
+	/**
+	 * @throws JsonException
+	 */
+	public function save(): void {
+		$file = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
+
+		$serializer = Combat::getInstance()->getSerializer();
+		$armor = $serializer->write($this->getArmor());
+		$inventory = $serializer->write($this->getInventory());
+		$offhand = $serializer->write($this->getOffhand());
+
+		$file->set($this->getId(), [
+			"world" => $this->getWorld()->getFolderName(),
+			"display_name" => $this->getDisplayName(),
+			"positions" => [
+				"1" => $this->getPosition(1, true),
+				"2" => $this->getPosition(2, true),
+			],
+			"inventory" => [
+				"content" => base64_encode(serialize($inventory)),
+				"armor" => base64_encode(serialize($armor)),
+				"offhand" => base64_encode(serialize($offhand))
+			]
+		]);
+		$file->save();
+	}
+
+	public function addBlock(Position $position): void {
+		// Position to x:y:z
+		$xyz = "{$position->getFloorX()}:{$position->getFloorY()}:{$position->getFloorZ()}";
+		$this->blocksPlaced[] = $xyz;
+	}
+
+	public function removeBlocksPlaced(): void {
+		foreach ($this->blocksPlaced as $pos) {
+			$this->world->setBlock(new Position(...explode(":", $pos)), VanillaBlocks::AIR());
+			// Remove $pos from $this->blocksPlaced
+			$this->blocksPlaced = array_diff($this->blocksPlaced, [$pos]);
+		}
+	}
+
+	public function getBlocksPlaced(): array {
+		return $this->blocksPlaced;
+	}
+
+	// STATUS FUNCTIONS
+
+	public function start(): void {
+		// Launch tasks for countdown
+		Combat::getInstance()->getScheduler()->scheduleRepeatingTask(new DuelCountdownTask($this), 20);
+	}
+
+	public function end(): void {
+		$this->setPlayer(1, null);
+		$this->setPlayer(2, null);
+		$this->removeBlocksPlaced();
+
+		$this->setStarted(false);
+	}
 }
