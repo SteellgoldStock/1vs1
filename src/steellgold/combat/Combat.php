@@ -31,9 +31,10 @@ class Combat extends PluginBase {
 		}
 
 		if (!file_exists($this->getDataFolder() . "arenas.json")) $this->saveResource("arenas.json");
-		$this->getServer()->getCommandMap()->register("duels", new CombatCommand($this,"arenas","Liste des arènes"));
-		$this->getServer()->getCommandMap()->register("duels", new CombatAdminCommand($this,"arena","Gérer les arènes"));
 		$this->getServer()->getPluginManager()->registerEvents(new DuelListeners(), $this);
+		$this->getServer()->getCommandMap()->register("arenas", new CombatCommand($this,"arenas","Liste des arènes"));
+		$this->getServer()->getCommandMap()->register("arena", new CombatAdminCommand($this,"arena","Gérer les arènes"));
+	}
 
 	protected function onDisable(): void {
 		foreach ($this->manager->getDuels() as $duel) $duel->save();
