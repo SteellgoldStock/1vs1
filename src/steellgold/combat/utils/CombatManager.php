@@ -12,6 +12,8 @@ class CombatManager {
 	public array $duels;
 
 	public function __construct() {
+		$serializer = Combat::getInstance()->getSerializer();
+		$this->duels = [];
 		$duels = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
 		foreach ($duels->getAll() as $duelId => $data) {
 			if (!Server::getInstance()->getWorldManager()->isWorldLoaded($data["world"])) {
