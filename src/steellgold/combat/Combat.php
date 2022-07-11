@@ -7,6 +7,7 @@ use CortexPE\Commando\PacketHooker;
 use pocketmine\plugin\PluginBase;
 use steellgold\combat\commands\CombatAdminCommand;
 use steellgold\combat\commands\CombatCommand;
+use steellgold\combat\listeners\DuelListeners;
 use steellgold\combat\utils\CombatManager;
 use steellgold\combat\utils\Serialize;
 
@@ -32,6 +33,7 @@ class Combat extends PluginBase {
 		if (!file_exists($this->getDataFolder() . "arenas.json")) $this->saveResource("arenas.json");
 		$this->getServer()->getCommandMap()->register("duels", new CombatCommand($this,"arenas","Liste des arènes"));
 		$this->getServer()->getCommandMap()->register("duels", new CombatAdminCommand($this,"arena","Gérer les arènes"));
+		$this->getServer()->getPluginManager()->registerEvents(new DuelListeners(), $this);
 
 	protected function onDisable(): void {
 		foreach ($this->manager->getDuels() as $duel) $duel->save();
