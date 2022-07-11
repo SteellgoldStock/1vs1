@@ -2,6 +2,7 @@
 
 namespace steellgold\combat;
 
+use CortexPE\Commando\exception\HookAlreadyRegistered;
 use CortexPE\Commando\PacketHooker;
 use pocketmine\plugin\PluginBase;
 use steellgold\combat\commands\CombatAdminCommand;
@@ -15,9 +16,13 @@ class Combat extends PluginBase {
 	public CombatManager $manager;
 	public Serialize $serializer;
 
+	/**
+	 * @throws HookAlreadyRegistered
+	 */
 	protected function onEnable(): void {
 		self::$instance = $this;
 		$this->serializer = new Serialize();
+
 		$this->manager = new CombatManager();
 
 		if(!PacketHooker::isRegistered()) {
