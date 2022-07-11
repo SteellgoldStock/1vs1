@@ -34,6 +34,18 @@ class Duel {
 	 * @param array $blocksPlaced
 	 */
 	public function __construct(
+		private string    $id,
+		private ?World    $world,
+		private string    $display_name,
+		private ?Player   $player1 = null,
+		private ?Player   $player2 = null,
+		private ?Position $position1 = null,
+		private ?Position $position2 = null,
+		private bool      $isStarted = false,
+		private array     $inventory = [],
+		private array     $armor = [],
+		private array     $offhand = [],
+		private array     $blocksPlaced = [],
 	) {
 		var_dump($this->player1->getName() . " vs " . $this->player2->getName());
 	}
