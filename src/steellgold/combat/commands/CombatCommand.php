@@ -16,7 +16,7 @@ class CombatCommand extends BaseCommand {
 			return;
 		}
 
-		$sender->sendForm($this->getArenasForm());
+		$sender->sendForm(self::getArenasForm());
 	}
 
 	public static function getArenasForm() : MenuForm {
