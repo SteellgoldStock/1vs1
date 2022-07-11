@@ -97,8 +97,34 @@ class Duel {
 		return $this->player2;
 	}
 
-	public function setStarted(): void {
-		$this->isStarted = true;
+	public function setPosition(int $id, Position $position): void {
+		match ($id) {
+			1 => $this->position1 = $position,
+			2 => $this->position2 = $position
+		};
+	}
+
+	public function getPosition(int $id, bool $toString = false): null|string|Position {
+		$position = match ($id) {
+			1 => $this->position1,
+			2 => $this->position2,
+			default => null
+		};
+
+		if ($toString) {
+			return "{$position->getFloorX()}:{$position->getFloorY()}:{$position->getFloorZ()}:{$position->getWorld()->getFolderName()}";
+		}
+
+		return $position;
+	}
+
+	public static function fromPositionStrign(string $position) : Position {
+		$pos = explode(":", $position);
+		return new Position((int)$pos[0],(int)$pos[1],(int)$pos[2], Server::getInstance()->getWorldManager()->getWorldByName($pos[3]));
+	}
+
+	public function setStarted(bool $status = true): void {
+		$this->isStarted = $status;
 	}
 
 	public function isStarted(): bool {
