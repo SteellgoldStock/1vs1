@@ -15,6 +15,17 @@ class CombatManager {
 		$duels = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
 		foreach ($duels->getAll() as $duelId => $data) {
 			$this->duels[] = new Duel($duelId);
+			$this->duels[$duelId] = new Duel(
+				$duelId,
+				Server::getInstance()->getWorldManager()->getWorldByName($data["world"]),$data["display_name"],
+				null, null,
+				Duel::fromPositionStrign($data["positions"]["1"]) ?? null,
+				Duel::fromPositionStrign($data["positions"]["2"]) ?? null,
+				false,
+				$serializer->read(unserialize(base64_decode($data["inventory"]["content"]))),
+				$serializer->read(unserialize(base64_decode($data["inventory"]["armor"]))),
+				$serializer->read(unserialize(base64_decode($data["inventory"]["offhand"])))
+			);
 		}
 	}
 
