@@ -13,7 +13,7 @@ class CombatManager {
 	/** @var Duel[] */
 	public array $duels;
 
-	private array $players;
+	public static array $players;
 
 	public function __construct() {
 		$serializer = Combat::getInstance()->getSerializer();
