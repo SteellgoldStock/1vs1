@@ -4,6 +4,7 @@ namespace steellgold\combat\utils\instances;
 
 use JsonException;
 use pocketmine\block\VanillaBlocks;
+use pocketmine\entity\HungerManager;
 use pocketmine\item\Item;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
@@ -13,6 +14,7 @@ use pocketmine\world\Position;
 use pocketmine\world\World;
 use steellgold\combat\Combat;
 use steellgold\combat\tasks\DuelCountdownTask;
+use steellgold\combat\utils\CombatManager;
 
 class Duel {
 
@@ -80,13 +82,14 @@ class Duel {
 			2 => $this->player2 = $player
 		};
 
-		$this->player1->teleport(match ($id) {
+		$player->teleport(match ($id) {
 			1 => $this->position1,
 			2 => $this->position2
 		});
 
-		$this->player1->setGamemode(GameMode::SURVIVAL());
-		$this->player1->setImmobile();
+		CombatManager::$players[$player->getName()] = $this->getId();
+		$player->setGamemode(GameMode::ADVENTURE());
+		$player->setImmobile();
 	}
 
 	public function getPlayer1(): ?Player {
@@ -125,6 +128,17 @@ class Duel {
 
 	public function setStarted(bool $status = true): void {
 		$this->isStarted = $status;
+
+		if ($status) {
+			/** @var Player $player */
+			foreach ([$this->player1, $this->player2] as $player) {
+				$player->setImmobile(false);
+				$player->setGamemode(GameMode::SURVIVAL());
+				$player->setImmobile(false);
+				$player->setHealth(20);
+				$player->getHungerManager()->setFood(20);
+			}
+		}
 	}
 
 	public function isStarted(): bool {
