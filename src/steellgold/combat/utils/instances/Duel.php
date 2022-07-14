@@ -3,9 +3,11 @@
 namespace steellgold\combat\utils\instances;
 
 use JsonException;
+use onebone\economyapi\EconomyAPI;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\HungerManager;
 use pocketmine\item\Item;
+use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -76,20 +78,24 @@ class Duel {
 		$this->display_name = $display_name;
 	}
 
-	public function setPlayer(int $id, ?Player $player): void {
+	public function setPlayer(int $id, ?Player $player = null, bool $teleport = false): void {
 		match ($id) {
 			1 => $this->player1 = $player,
 			2 => $this->player2 = $player
 		};
 
-		$player->teleport(match ($id) {
+		if ($teleport) $player->teleport(match ($id) {
 			1 => $this->position1,
 			2 => $this->position2
 		});
 
-		CombatManager::$players[$player->getName()] = $this->getId();
-		$player->setGamemode(GameMode::ADVENTURE());
-		$player->setImmobile();
+		if ($player !== null) {
+
+
+			CombatManager::$players[$player->getName()] = $this->getId();
+			$player->setGamemode(GameMode::ADVENTURE());
+			$player->setImmobile();
+		}
 	}
 
 	public function getPlayer1(): ?Player {
@@ -137,6 +143,10 @@ class Duel {
 				$player->setImmobile(false);
 				$player->setHealth(20);
 				$player->getHungerManager()->setFood(20);
+
+				$player->getInventory()->setContents($this->inventory);
+				$player->getArmorInventory()->setContents($this->armor);
+				$player->getOffhandInventory()->setContents($this->offhand);
 			}
 		}
 	}
@@ -233,15 +243,13 @@ class Duel {
 	}
 
 	public function addBlock(Position $position): void {
-		// Position to x:y:z
 		$xyz = "{$position->getFloorX()}:{$position->getFloorY()}:{$position->getFloorZ()}";
 		$this->blocksPlaced[] = $xyz;
 	}
 
 	public function removeBlocksPlaced(): void {
 		foreach ($this->blocksPlaced as $pos) {
-			$this->world->setBlock(new Position(...explode(":", $pos)), VanillaBlocks::AIR());
-			// Remove $pos from $this->blocksPlaced
+			$this->world->setBlock(new Vector3(...explode(":", $pos)), VanillaBlocks::AIR());
 			$this->blocksPlaced = array_diff($this->blocksPlaced, [$pos]);
 		}
 	}
@@ -253,13 +261,25 @@ class Duel {
 	// STATUS FUNCTIONS
 
 	public function start(): void {
-		// Launch tasks for countdown
 		Combat::getInstance()->getScheduler()->scheduleRepeatingTask(new DuelCountdownTask($this), 20);
 	}
 
-	public function end(): void {
+	public function end(Player $winner, Player $looser): void {
+		/** @var Player $player */
+		foreach ([$this->player1, $this->player2] as $player) {
+			$player->getInventory()->setContents([]);
+			$player->getArmorInventory()->setContents([]);
+			$player->getOffhandInventory()->setContents([]);
+
+			$player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+		}
+
 		$this->setPlayer(1, null);
 		$this->setPlayer(2, null);
+
+		EconomyAPI::getInstance()->addMoney($winner, self::WIN);
+		EconomyAPI::getInstance()->reduceMoney($looser, self::LOOSE);
+
 		$this->removeBlocksPlaced();
 
 		$this->setStarted(false);
