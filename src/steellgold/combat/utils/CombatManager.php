@@ -41,8 +41,11 @@ class CombatManager {
 	}
 
 	public function getDuel(string $id): ?Duel {
+		var_dump($id);
 		foreach ($this->duels as $duel) {
-			if ($duel->getId() === $id) {
+			var_dump($duel->getDisplayName());
+			if ($duel->getId() == $id) {
+				var_dump($id);
 				return $duel;
 			}
 		}
