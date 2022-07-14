@@ -38,13 +38,20 @@ class CombatCommand extends BaseCommand {
 			$buttons,
 			function (Player $player, int $selectedOption) use ($duels) : void {
 				$duel = Combat::getInstance()->getManager()->getDuel($duels[$selectedOption]);
-				if ($duel->getPlayer1() == null) $duel->setPlayer(1, $player);
-				else $duel->setPlayer(2, $player);
+				if ($duel->getPlayer1() == null) $duel->setPlayer(1, $player, true);
+				else $duel->setPlayer(2, $player, true);
 
 				if ($duel->getSlots(true) == 2) {
-					$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
-					$duel->getPlayer1()->sendMessage("§l» §r{$player->getName()} a rejoint l'arène, début du compte à rebours...");
-					$duel->start();
+					if ($duel->getPlayer1()->isOnline()) {
+						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
+						$duel->getPlayer1()->sendMessage("§l» §r{$player->getName()} a rejoint l'arène, début du compte à rebours...");
+						$duel->start();
+					}else{
+						$duel->setPlayer(1, $player, true);
+						$duel->setPlayer(2, null);
+						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
+						$player->sendMessage("§cL'arène n'est plus complete, un joueur la quitté il y a quelque instants, attendez qu'un autre joueur rejoigne");
+					}
 				} elseif ($duel->getSlots(true) == 1) {
 					$player->sendMessage("§cL'arène n'est pas complete, attendez qu'un joueur rejoigne");
 				}
