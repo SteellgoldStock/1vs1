@@ -7,6 +7,7 @@ use dktapps\pmforms\MenuForm;
 use dktapps\pmforms\MenuOption;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use pocketmine\world\Position;
 use steellgold\combat\Combat;
 
 class CombatCommand extends BaseCommand {
@@ -27,9 +28,11 @@ class CombatCommand extends BaseCommand {
 
 		$i = 0;
 		foreach (Combat::getInstance()->getManager()->getDuels() as $duelId => $duel) {
-			$buttons[] = new MenuOption($duel->getDisplayName() . "\n" . $duel->getSlots());
-			$duels[$i] = $duelId;
-			$i++;
+			if ($duel->getPosition(1) instanceof Position AND $duel->getPosition(2) instanceof Position) {
+				$buttons[] = new MenuOption($duel->getDisplayName() . "\n" . $duel->getSlots());
+				$duels[$i] = $duelId;
+				$i++;
+			}
 		}
 
 		return new MenuForm(
