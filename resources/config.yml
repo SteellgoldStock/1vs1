@@ -1,1 +1,13 @@
 messages:
+  created: "§aL'instance de combat §f{ID} §aà été créée avec succès, vous devez à présent attribuer les positions d'apparitions à cette instance."
+  inventory: "§aL'inventaire à été attribué avec succès."
+  position: "§aLa position §f#{POSITION_ID} §apour l'arène §f{ARENA_NAME} §aà été attribuée avec succès."
+  deleted: "§aL'instance de combat §f{ID} §aà été créée avec succès, vous devez à présent attribuer les positions d'apparitions à cette instance."
+
+  joined-duel: "§l» §rVous avez rejoint l'arène §f{ARENA_NAME}"
+  player-joined-duel: "§l» §r{PLAYER} a rejoint l'arène, début du compte à rebours..."
+  waiting-for-player: "§cL'arène n'est pas complete, attendez qu'un joueur rejoigne, cliquer sur le lit pour quitter la file d'attente"
+  old-waiting-for-player: "§cL'arène n'est plus complete, un joueur la quitté il y a quelque instants, attendez qu'un autre joueur rejoigne, cliquer sur le lit pour quitter la file d'attente"
+
+  world-not-found: "§cLe monde §f{WORLD} §cn'existe pas ou n'est pas chargé."
+  duel-not-found: "§cL'identifiant §f{ID} §cn'est pas attribué à une instance de combat, créer d'abord l'arène !"
