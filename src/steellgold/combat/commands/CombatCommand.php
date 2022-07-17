@@ -52,19 +52,19 @@ class CombatCommand extends BaseCommand {
 
 				if ($duel->getSlots(true) == 2) {
 					if ($duel->getPlayer1()->isOnline()) {
-						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
-						$duel->getPlayer1()->sendMessage("§l» §r{$player->getName()} a rejoint l'arène, début du compte à rebours...");
+						$player->sendMessage(str_replace("{ARENA_NAME}", $duel->getDisplayName(), Combat::getInstance()->getConfig()->get("messages")["joined-duel"]));
+						$duel->getPlayer1()->sendMessage(str_replace("{PLAYER}", $player->getName(), Combat::getInstance()->getConfig()->get("messages")["player-joined-duel"]));
 						$duel->getPlayer1()->getInventory()->removeItem(VanillaItems::RED_BED());
 						$duel->start();
 					}else{
 						$duel->setPlayer(1, $player, true);
 						$duel->setPlayer(2, null);
-						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
-						$player->sendMessage("§cL'arène n'est plus complete, un joueur la quitté il y a quelque instants, attendez qu'un autre joueur rejoigne, refaite la commande pour quitter la partie");
+						$player->sendMessage(str_replace("{ARENA_NAME}", $duel->getDisplayName(), Combat::getInstance()->getConfig()->get("messages")["joinded-duel"]));
+						$player->sendMessage(str_replace("{ARENA_NAME}", $duel->getDisplayName(), Combat::getInstance()->getConfig()->get("messages")["old-waiting-for-player"]));
 						$player->getInventory()->setItem(8, VanillaItems::RED_BED());
 					}
 				} elseif ($duel->getSlots(true) == 1) {
-					$player->sendMessage("§cL'arène n'est pas complete, attendez qu'un joueur rejoigne, refaite la commande pour quitter la partie");
+					$player->sendMessage(str_replace("{ARENA_NAME}", $duel->getDisplayName(), Combat::getInstance()->getConfig()->get("messages")["waiting-for-player"]));
 					$player->getInventory()->setItem(8, VanillaItems::RED_BED());
 				}
 			}
