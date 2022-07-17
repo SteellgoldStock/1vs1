@@ -2,6 +2,7 @@
 
 namespace steellgold\combat\utils;
 
+use JsonException;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\World;
@@ -16,6 +17,8 @@ class CombatManager {
 	public static array $players;
 
 	public function __construct() {
+		self::$players = [];
+
 		$serializer = Combat::getInstance()->getSerializer();
 		$this->duels = [];
 
@@ -40,12 +43,21 @@ class CombatManager {
 		}
 	}
 
+	/**
+	 * @throws JsonException
+	 */
+	public function remove(string $id): void {
+		unset($this->duels[$id]);
+		$file = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
+		if ($file->exists($id)) {
+			$file->remove($id);
+			$file->save();
+		}
+	}
+
 	public function getDuel(string $id): ?Duel {
-		var_dump($id);
 		foreach ($this->duels as $duel) {
-			var_dump($duel->getDisplayName());
 			if ($duel->getId() == $id) {
-				var_dump($id);
 				return $duel;
 			}
 		}

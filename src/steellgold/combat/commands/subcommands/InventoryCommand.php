@@ -30,5 +30,6 @@ class InventoryCommand extends BaseSubCommand {
 		$duel->setInventory($sender->getInventory()->getContents());
 		$duel->setArmor($sender->getArmorInventory()->getContents());
 		$duel->setOffhand($sender->getOffhandInventory()->getContents());
+		$sender->sendMessage("§aL'inventaire à été attribué avec succès.");
 	}
 }
