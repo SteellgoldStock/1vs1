@@ -28,12 +28,12 @@ class CreateCommand extends BaseSubCommand {
 		}
 
 		if (!Server::getInstance()->getWorldManager()->isWorldLoaded($args["world"])) {
-			$sender->sendMessage("§cLe monde §f{$args["world"]} §cest introuvable, ou n'est pas chargé");
+			$sender->sendMessage(str_replace("{WORLD}", $args["world"], Combat::getInstance()->getConfig()->get("messages")["world-not-found"]));
 			return;
 		}
 
 		$world = Server::getInstance()->getWorldManager()->getWorldByName($args["world"]);
 		Combat::getInstance()->getManager()->createDuel($args["id"], $world, $args["display_name"]);
-		$sender->sendMessage("§aL'instance de combat §f{$args["id"]} §aà été créée avec succès, vous devez à présent attribuer les positions d'apparitions à cette instance.");
+		$sender->sendMessage(str_replace("{ID}",$args["id"],Combat::getInstance()->getConfig()->get("messages")["created"]));
 	}
 }

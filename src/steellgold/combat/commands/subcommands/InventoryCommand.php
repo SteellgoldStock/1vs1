@@ -22,7 +22,7 @@ class InventoryCommand extends BaseSubCommand {
 		}
 
 		if (!Combat::getInstance()->getManager()->duelExist($args["id"])) {
-			$sender->sendMessage("§cL'identifiant §f{$args["id"]} §cn'est pas attribué à une instance de combat, créer d'abord l'île afin de pouvoir y attribuer un inventaire");
+			$sender->sendMessage(str_replace("{ID}", $args["id"], Combat::getInstance()->getConfig()->get("messages")["duel-not-found"]));
 			return;
 		}
 
@@ -30,6 +30,6 @@ class InventoryCommand extends BaseSubCommand {
 		$duel->setInventory($sender->getInventory()->getContents());
 		$duel->setArmor($sender->getArmorInventory()->getContents());
 		$duel->setOffhand($sender->getOffhandInventory()->getContents());
-		$sender->sendMessage("§aL'inventaire à été attribué avec succès.");
+		$sender->sendMessage(str_replace(["{ARENA_NAME}"],[$duel->getDisplayName()],Combat::getInstance()->getConfig()->get("messages")["inventory"]));
 	}
 }

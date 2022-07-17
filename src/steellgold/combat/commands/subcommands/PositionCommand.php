@@ -23,12 +23,12 @@ class PositionCommand extends BaseSubCommand {
 		}
 
 		if (!Combat::getInstance()->getManager()->duelExist($args["id"])) {
-			$sender->sendMessage("§cL'identifiant §f{$args["id"]} §cn'est pas attribué à une instance de combat, créer d'abord l'île afin de pouvoir y attribuer un inventaire");
+			$sender->sendMessage(str_replace("{ID}", $args["id"], Combat::getInstance()->getConfig()->get("messages")["duel-not-found"]));
 			return;
 		}
 
 		$duel = Combat::getInstance()->getManager()->getDuel($args["id"]);
 		$duel->setPosition($args["position_id"],$sender->getPosition());
-		$sender->sendMessage("§aLa position §f#{$args["position_id"]} §aà été attribuée avec succès.");
+		$sender->sendMessage(str_replace(["{POSITION_ID}", "{ARENA_NAME}"],[$args["id"], $duel->getDisplayName()],Combat::getInstance()->getConfig()->get("messages")["position"]));
 	}
 }
