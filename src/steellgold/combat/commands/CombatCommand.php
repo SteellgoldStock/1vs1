@@ -6,9 +6,11 @@ use CortexPE\Commando\BaseCommand;
 use dktapps\pmforms\MenuForm;
 use dktapps\pmforms\MenuOption;
 use pocketmine\command\CommandSender;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\world\Position;
 use steellgold\combat\Combat;
+use steellgold\combat\utils\CombatManager;
 
 class CombatCommand extends BaseCommand {
 
@@ -18,7 +20,11 @@ class CombatCommand extends BaseCommand {
 			return;
 		}
 
-		$sender->sendForm(self::getArenasForm());
+		if (!key_exists($sender->getName(), CombatManager::$players)) {
+			$sender->sendForm(self::getArenasForm());
+		} else {
+			$sender->sendMessage("§cCliquez sur le lit pour quitter la fîle d'attente.");
+		}
 	}
 
 	public static function getArenasForm() : MenuForm {
@@ -48,15 +54,18 @@ class CombatCommand extends BaseCommand {
 					if ($duel->getPlayer1()->isOnline()) {
 						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
 						$duel->getPlayer1()->sendMessage("§l» §r{$player->getName()} a rejoint l'arène, début du compte à rebours...");
+						$duel->getPlayer1()->getInventory()->removeItem(VanillaItems::RED_BED());
 						$duel->start();
 					}else{
 						$duel->setPlayer(1, $player, true);
 						$duel->setPlayer(2, null);
 						$player->sendMessage("§l» §rVous avez rejoint l'arène §f{$duel->getDisplayName()}");
-						$player->sendMessage("§cL'arène n'est plus complete, un joueur la quitté il y a quelque instants, attendez qu'un autre joueur rejoigne");
+						$player->sendMessage("§cL'arène n'est plus complete, un joueur la quitté il y a quelque instants, attendez qu'un autre joueur rejoigne, refaite la commande pour quitter la partie");
+						$player->getInventory()->setItem(8, VanillaItems::RED_BED());
 					}
 				} elseif ($duel->getSlots(true) == 1) {
-					$player->sendMessage("§cL'arène n'est pas complete, attendez qu'un joueur rejoigne");
+					$player->sendMessage("§cL'arène n'est pas complete, attendez qu'un joueur rejoigne, refaite la commande pour quitter la partie");
+					$player->getInventory()->setItem(8, VanillaItems::RED_BED());
 				}
 			}
 		);
