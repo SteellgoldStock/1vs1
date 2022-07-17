@@ -29,5 +29,6 @@ class PositionCommand extends BaseSubCommand {
 
 		$duel = Combat::getInstance()->getManager()->getDuel($args["id"]);
 		$duel->setPosition($args["position_id"],$sender->getPosition());
+		$sender->sendMessage("§aLa position §f#{$args["position_id"]} §aà été attribuée avec succès.");
 	}
 }
