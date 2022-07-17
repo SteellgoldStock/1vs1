@@ -6,8 +6,12 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\item\VanillaItems;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use steellgold\combat\Combat;
 use steellgold\combat\commands\CombatCommand;
 use steellgold\combat\utils\CombatManager;
@@ -34,6 +38,18 @@ class DuelListeners implements Listener {
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	public function onUse(PlayerItemUseEvent $event) {
+		$player = $event->getPlayer();
+		if ($event->getItem()->getId() == VanillaItems::RED_BED()->getId()){
+			if (key_exists($player->getName(), CombatManager::$players)) {
+				$duel = Combat::getInstance()->getManager()->getDuel(CombatManager::$players[$player->getName()]);
+				if ($duel instanceof Duel) {
+					$duel->cancel();
 				}
 			}
 		}

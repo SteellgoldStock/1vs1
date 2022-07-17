@@ -121,7 +121,7 @@ class Duel {
 		};
 
 		if ($toString) {
-			return "{$position->getFloorX()}:{$position->getFloorY()}:{$position->getFloorZ()}:{$position->getWorld()->getFolderName()}";
+			$position = "{$position->getFloorX()}:{$position->getFloorY()}:{$position->getFloorZ()}:{$position->getWorld()->getFolderName()}";
 		}
 
 		return $position;
@@ -221,25 +221,27 @@ class Duel {
 	public function save(): void {
 		$file = new Config(Combat::getInstance()->getDataFolder() . "duels.json", Config::JSON);
 
-		$serializer = Combat::getInstance()->getSerializer();
-		$armor = $serializer->write($this->getArmor());
-		$inventory = $serializer->write($this->getInventory());
-		$offhand = $serializer->write($this->getOffhand());
+		if ($this->position1 instanceof Position AND $this->position2 instanceof Position) {
+			$serializer = Combat::getInstance()->getSerializer();
+			$armor = $serializer->write($this->getArmor());
+			$inventory = $serializer->write($this->getInventory());
+			$offhand = $serializer->write($this->getOffhand());
 
-		$file->set($this->getId(), [
-			"world" => $this->getWorld()->getFolderName(),
-			"display_name" => $this->getDisplayName(),
-			"positions" => [
-				"1" => $this->getPosition(1, true),
-				"2" => $this->getPosition(2, true),
-			],
-			"inventory" => [
-				"content" => base64_encode(serialize($inventory)),
-				"armor" => base64_encode(serialize($armor)),
-				"offhand" => base64_encode(serialize($offhand))
-			]
-		]);
-		$file->save();
+			$file->set($this->getId(), [
+				"world" => $this->getWorld()->getFolderName(),
+				"display_name" => $this->getDisplayName(),
+				"positions" => [
+					"1" => $this->position1 !== null ? $this->getPosition(1, true) : null,
+					"2" => $this->position2 !== null ? $this->getPosition(2, true) : null
+				],
+				"inventory" => [
+					"content" => base64_encode(serialize($inventory)),
+					"armor" => base64_encode(serialize($armor)),
+					"offhand" => base64_encode(serialize($offhand))
+				]
+			]);
+			$file->save();
+		}
 	}
 
 	public function addBlock(Position $position): void {
@@ -274,6 +276,8 @@ class Duel {
 			$player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
 		}
 
+		unset(CombatManager::$players[$this->player1->getName()]);
+		unset(CombatManager::$players[$this->player2->getName()]);
 		$this->setPlayer(1, null);
 		$this->setPlayer(2, null);
 
@@ -283,5 +287,30 @@ class Duel {
 		$this->removeBlocksPlaced();
 
 		$this->setStarted(false);
+	}
+
+	public function cancel(): void {
+		/** @var Player $player */
+		$this->player1->getInventory()->setContents([]);
+		$this->player1->getArmorInventory()->setContents([]);
+		$this->player1->getOffhandInventory()->setContents([]);
+		$this->player1->setImmobile(false);
+		$this->player1->setGamemode(GameMode::SURVIVAL());
+		$this->player1->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+
+		unset(CombatManager::$players[$this->player1->getName()]);
+
+		$this->setPlayer(1, null);
+		$this->setPlayer(2, null);
+
+		$this->removeBlocksPlaced();
+		$this->setStarted(false);
+	}
+
+	/**
+	 * @throws JsonException
+	 */
+	public function delete(): void {
+		Combat::getInstance()->getManager()->remove($this->getId());
 	}
 }

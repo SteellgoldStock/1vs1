@@ -2,6 +2,7 @@
 
 namespace steellgold\combat\tasks;
 
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use steellgold\combat\utils\instances\Duel;
@@ -18,6 +19,7 @@ class DuelCountdownTask extends Task {
 	public function onRun(): void {
 		if (!$this->duel->getPlayer1()->isOnline() and $this->duel->getPlayer2()->isOnline()) {
 			$this->duel->setPlayer(1, $this->duel->getPlayer2());
+			$this->duel->getPlayer1()->getInventory()->setItem(8, VanillaItems::RED_BED());
 			$this->duel->setPlayer(2,null);
 			$this->duel->getPlayer1()->sendMessage("§cDuel: Le compte à rebours est annulé, du fait que votre adversaire est hors-ligne");
 			$this->getHandler()->cancel();
