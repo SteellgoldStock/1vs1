@@ -34,5 +34,6 @@ class CreateCommand extends BaseSubCommand {
 
 		$world = Server::getInstance()->getWorldManager()->getWorldByName($args["world"]);
 		Combat::getInstance()->getManager()->createDuel($args["id"], $world, $args["display_name"]);
+		$sender->sendMessage("§aL'instance de combat §f{$args["id"]} §aà été créée avec succès, vous devez à présent attribuer les positions d'apparitions à cette instance.");
 	}
 }

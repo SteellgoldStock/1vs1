@@ -4,15 +4,33 @@ namespace steellgold\combat\commands\subcommands;
 
 use CortexPE\Commando\args\RawStringArgument;
 use CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
+use steellgold\combat\Combat;
 
 class DeleteCommand extends BaseSubCommand {
 
+	/**
+	 * @throws ArgumentOrderException
+	 */
 	protected function prepare(): void {
 		$this->registerArgument(0,new RawStringArgument("id",false));
 	}
 
 	public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
-		var_dump("delete");
+		if (!$sender instanceof Player){
+			$sender->sendMessage("§cThis command can only be used in-game.");
+			return;
+		}
+
+		if (!Combat::getInstance()->getManager()->duelExist($args["id"])) {
+			$sender->sendMessage("§cL'identifiant §f{$args["id"]} §cn'est pas attribué à une instance de combat, créer d'abord l'île afin de pouvoir y attribuer un inventaire");
+			return;
+		}
+
+		$duel = Combat::getInstance()->getManager()->getDuel($args["id"]);
+		$duel->delete();
+		$sender->sendMessage("§aL'instance de combat §f{$args["id"]} §aà été supprimée avec succès.");
 	}
 }
