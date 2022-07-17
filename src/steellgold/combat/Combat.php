@@ -4,6 +4,7 @@ namespace steellgold\combat;
 
 use CortexPE\Commando\exception\HookAlreadyRegistered;
 use CortexPE\Commando\PacketHooker;
+use JsonException;
 use pocketmine\plugin\PluginBase;
 use steellgold\combat\commands\CombatAdminCommand;
 use steellgold\combat\commands\CombatCommand;
@@ -36,6 +37,9 @@ class Combat extends PluginBase {
 		$this->getServer()->getCommandMap()->register("arena", new CombatAdminCommand($this,"arena","Gérer les arènes"));
 	}
 
+	/**
+	 * @throws JsonException
+	 */
 	protected function onDisable(): void {
 		foreach ($this->manager->getDuels() as $duel) $duel->save();
 	}
